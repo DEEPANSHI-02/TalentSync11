@@ -11,12 +11,12 @@ function logMatchRequest(requirements, matchCount, processingTime) {
     processing_time_ms: processingTime
   };
   
-  console.log('📊 Match Request:', JSON.stringify(logEntry, null, 2));
+  console.log(' Match Request:', JSON.stringify(logEntry, null, 2));
 }
 
 function logError(error, context = '') {
   const timestamp = new Date().toISOString();
-  console.error(`❌ [${timestamp}] Error ${context}:`, error.message);
+  console.error(` [${timestamp}] Error ${context}:`, error.message);
   if (error.stack) {
     console.error('Stack trace:', error.stack);
   }
@@ -24,7 +24,7 @@ function logError(error, context = '') {
 
 function logInfo(message, data = null) {
   const timestamp = new Date().toISOString();
-  console.log(`ℹ️  [${timestamp}] ${message}`);
+  console.log(` [${timestamp}] ${message}`);
   if (data) {
     console.log('   Data:', JSON.stringify(data, null, 2));
   }
