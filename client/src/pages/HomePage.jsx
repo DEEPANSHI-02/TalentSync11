@@ -13,6 +13,31 @@ const HomePage = () => {
   const [serverStatus, setServerStatus] = useState('checking');
   const [searchParamsURL, setSearchParamsURL] = useSearchParams();
   const [resetForm, setResetForm] = useState(false);
+  // Recent Searches
+  const [recentSearches, setRecentSearches] = useState([]);
+
+  // Load recent searches from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('recentTalentSearches');
+    if (stored) {
+      setRecentSearches(JSON.parse(stored));
+    }
+  }, []);
+
+  // Save to localStorage when a new search is performed
+  const saveRecentSearch = (searchData) => {
+    const newEntry = {
+      location: searchData.location,
+      skills: searchData.skills,
+      budget: searchData.budget,
+      style_preferences: searchData.style_preferences,
+      timestamp: Date.now()
+    };
+    let updated = [newEntry, ...recentSearches.filter(s => JSON.stringify(s) !== JSON.stringify(newEntry))];
+    if (updated.length > 5) updated = updated.slice(0, 5); // Keep only 5 recent
+    setRecentSearches(updated);
+    localStorage.setItem('recentTalentSearches', JSON.stringify(updated));
+  };
 
   // Check server status on mount
   useEffect(() => {
@@ -46,7 +71,7 @@ const HomePage = () => {
     }
   };
 
-  // Modified handleSearch to optionally skip updating URL
+  // Modified handleSearch to save recent searches
   const handleSearch = async (searchData, updateURL = true) => {
     setLoading(true);
     setError(null);
@@ -64,11 +89,17 @@ const HomePage = () => {
           style_preferences: searchData.style_preferences.join(',')
         });
       }
+      saveRecentSearch(searchData);
     } catch (error) {
       setError(error.message || 'Failed to find matches. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handler to re-run a recent search
+  const handleRecentSearch = (search) => {
+    handleSearch(search);
   };
 
   // Add clearSearch function
@@ -133,6 +164,25 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        {/* Recent Searches */}
+        {recentSearches.length > 0 && (
+          <div className="mb-6 max-w-4xl mx-auto">
+            <div className="font-semibold text-gray-700 mb-2">Recent Searches:</div>
+            <div className="flex flex-wrap gap-2">
+              {recentSearches.map((s, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleRecentSearch(s)}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm border border-gray-200"
+                  title={`Location: ${s.location}, Skills: ${s.skills.join(', ')}, Budget: ₹${s.budget}, Styles: ${s.style_preferences.join(', ')}`}
+                >
+                  {s.location} | {s.skills.join(', ')} | ₹{s.budget} | {s.style_preferences.join(', ')}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Search Form */}
         <SearchForm onSubmit={handleSearch} loading={loading} initialValues={searchParams} resetForm={resetForm} />
