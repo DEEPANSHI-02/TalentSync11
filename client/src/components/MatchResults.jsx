@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, MapPin, Clock, ExternalLink, Award, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const MatchResults = ({ results, searchParams }) => {
   if (!results || !results.matches || results.matches.length === 0) {
@@ -103,10 +104,10 @@ const MatchResults = ({ results, searchParams }) => {
 
                   {/* Action Button */}
                   <div className="mt-4 flex space-x-3">
-                    <button className="btn-primary flex items-center space-x-2">
+                    <Link to={`/profile/${match.id}`} className="btn-primary flex items-center space-x-2">
                       <span>View Full Profile</span>
                       <ExternalLink className="w-4 h-4" />
-                    </button>
+                    </Link>
                     <button className="btn-secondary">
                       Contact Now
                     </button>

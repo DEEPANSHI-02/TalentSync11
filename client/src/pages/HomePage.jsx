@@ -32,14 +32,11 @@ const HomePage = () => {
     setResults(null);
 
     try {
-      console.log('🔍 Searching for matches:', searchData);
       const response = await apiService.findMatches(searchData);
-      console.log('✅ Search results:', response);
       
       setResults(response);
       setSearchParams(searchData);
     } catch (error) {
-      console.error('❌ Search error:', error);
       setError(error.message || 'Failed to find matches. Please try again.');
     } finally {
       setLoading(false);

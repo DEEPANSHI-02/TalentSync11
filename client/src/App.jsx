@@ -4,6 +4,7 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import BrowsePage from './pages/BrowsePage';
 import StatsPage from './pages/StatsPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/stats" element={<StatsPage />} />
+            <Route path="/profile/:id" element={<ProfilePage />} />
           </Routes>
         </main>
         

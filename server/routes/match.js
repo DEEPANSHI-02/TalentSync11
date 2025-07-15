@@ -58,6 +58,7 @@ router.post('/', validateMatchInput, (req, res) => {
     const response = {
       success: true,
       matches: topMatches.map(match => ({
+        id: match.id, // Include the id field for frontend routing
         name: match.name,
         score: match.score,
         reason: match.reason,
