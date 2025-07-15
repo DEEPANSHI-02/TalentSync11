@@ -38,9 +38,9 @@ A modern web app to match client briefs with the most relevant creative talent, 
 
 ## 🖥️ Screenshots
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ee8ebaf3-8caa-4003-929e-8a2394d96f2b" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9324545c-aad4-41dd-ab64-53e35b562d33" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/eddd14e8-1747-4539-a9a3-073ec761bc2a" />
+<img width="1597" height="863" alt="image" src="https://github.com/user-attachments/assets/7d0ae95a-d728-4557-a0db-dd1fbfc92bc2" />
+<img width="1585" height="854" alt="image" src="https://github.com/user-attachments/assets/0a4d2c9b-162c-483a-8e50-abb386938a70" />
+<img width="1584" height="858" alt="image" src="https://github.com/user-attachments/assets/5d135921-4177-48c8-9be0-edaa3c6401db" />
 
 ---
 
@@ -105,14 +105,6 @@ npm run dev
 - Sample briefs auto-fill
 - Statistics dashboard
 - Contact modal
-
----
-
-## 📄 Assignment & Credits
-
-- **Assignment:** BreadButter Fullstack Internship – Task 1: Talent Matchmaker Lite
-- **Author:** Deepanshi Kadian
-- **For demo and educational purposes only.**
 
 ---
 
