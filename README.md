@@ -110,9 +110,8 @@ npm run dev
 
 ## 📬 Contact
 
-- [GitHub](https://github.com/deepanshikadian)
-- [LinkedIn](https://linkedin.com/in/deepanshikadian)
-- [Email](mailto:deepanshikadian@gmail.com)
+- [GitHub](https://github.com/DEEPANSHI-02)
+- [Email](mailto:deepanshik825@gmail.com)
 
 ---
 
