@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, DollarSign, Palette, Plus, X } from 'lucide-react';
 
-const SearchForm = ({ onSubmit, loading, initialValues }) => {
+const SearchForm = ({ onSubmit, loading, initialValues, resetForm }) => {
   const [formData, setFormData] = useState(initialValues || {
     location: '',
     skills: [],
@@ -19,6 +19,18 @@ const SearchForm = ({ onSubmit, loading, initialValues }) => {
       });
     }
   }, [initialValues]);
+
+  // Reset form when resetForm prop changes to true
+  useEffect(() => {
+    if (resetForm) {
+      setFormData({
+        location: '',
+        skills: [],
+        budget: '',
+        style_preferences: []
+      });
+    }
+  }, [resetForm]);
 
   const [skillInput, setSkillInput] = useState('');
   const [styleInput, setStyleInput] = useState('');

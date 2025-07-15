@@ -12,6 +12,7 @@ const HomePage = () => {
   const [searchParams, setSearchParams] = useState(null);
   const [serverStatus, setServerStatus] = useState('checking');
   const [searchParamsURL, setSearchParamsURL] = useSearchParams();
+  const [resetForm, setResetForm] = useState(false);
 
   // Check server status on mount
   useEffect(() => {
@@ -70,6 +71,14 @@ const HomePage = () => {
     }
   };
 
+  // Add clearSearch function
+  const clearSearch = () => {
+    setResults(null);
+    setSearchParams(null);
+    setSearchParamsURL({}); // Remove all query params
+    setResetForm(r => !r); // Toggle to trigger form reset
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Server Status Banner */}
@@ -126,7 +135,19 @@ const HomePage = () => {
         </div>
 
         {/* Search Form */}
-        <SearchForm onSubmit={handleSearch} loading={loading} initialValues={searchParams} />
+        <SearchForm onSubmit={handleSearch} loading={loading} initialValues={searchParams} resetForm={resetForm} />
+
+        {/* Clear Search Button */}
+        {(results || searchParams) && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={clearSearch}
+              className="btn-secondary px-6 py-2 text-base font-medium"
+            >
+              Clear Search
+            </button>
+          </div>
+        )}
 
         {/* Error Display */}
         {error && (
