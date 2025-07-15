@@ -33,7 +33,9 @@ const HomePage = () => {
       style_preferences: searchData.style_preferences,
       timestamp: Date.now()
     };
-    let updated = [newEntry, ...recentSearches.filter(s => JSON.stringify(s) !== JSON.stringify(newEntry))];
+    const stored = localStorage.getItem('recentTalentSearches');
+    let prev = stored ? JSON.parse(stored) : [];
+    let updated = [newEntry, ...prev.filter(s => JSON.stringify(s) !== JSON.stringify(newEntry))];
     if (updated.length > 5) updated = updated.slice(0, 5); // Keep only 5 recent
     setRecentSearches(updated);
     localStorage.setItem('recentTalentSearches', JSON.stringify(updated));
