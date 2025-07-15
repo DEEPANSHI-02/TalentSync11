@@ -19,20 +19,6 @@ function App() {
             <Route path="/profile/:id" element={<ProfilePage />} />
           </Routes>
         </main>
-        
-        {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center">
-              <p className="text-gray-600 mb-2">
-                Built with ❤️ for BreadButter Assignment
-              </p>
-              <p className="text-sm text-gray-500">
-                Created by Deepanshi Kadian • Task 1: Talent Matchmaker Lite
-              </p>
-            </div>
-          </div>
-        </footer>
       </div>
     </Router>
   );
