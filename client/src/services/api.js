@@ -73,7 +73,7 @@ export const apiService = {
   // Get talent statistics
   async getTalentStats() {
     try {
-      const response = await api.get('/api/talents/stats');
+      const response = await api.get('/api/stats');
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch statistics');

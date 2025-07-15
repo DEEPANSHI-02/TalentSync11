@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { BarChart3, Users, MapPin, Star, TrendingUp, Award } from 'lucide-react';
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const StatsPage = () => {
   const [stats, setStats] = useState(null);
@@ -15,7 +27,7 @@ const StatsPage = () => {
     try {
       setLoading(true);
       const response = await apiService.getTalentStats();
-      setStats(response.statistics);
+      setStats(response);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -72,7 +84,7 @@ const StatsPage = () => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Talents</p>
-                <p className="text-2xl font-bold text-gray-900">{stats?.total_talents || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.totalTalents || 0}</p>
               </div>
             </div>
           </div>
@@ -84,7 +96,7 @@ const StatsPage = () => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Cities</p>
-                <p className="text-2xl font-bold text-gray-900">{stats?.cities?.length || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.cityDistribution?.length || 0}</p>
               </div>
             </div>
           </div>
@@ -96,7 +108,7 @@ const StatsPage = () => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Unique Skills</p>
-                <p className="text-2xl font-bold text-gray-900">{stats?.total_skills || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.uniqueSkills || 0}</p>
               </div>
             </div>
           </div>
@@ -107,7 +119,8 @@ const StatsPage = () => {
                 <Award className="w-6 h-6 text-purple-600" />
               </div>
               <div className="ml-4">
-                                <p className="text-2xl font-bold text-gray-900">{stats?.total_categories || 0}</p>
+                <p className="text-sm font-medium text-gray-600">Unique Style Tags</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.uniqueStyleTags || 0}</p>
               </div>
             </div>
           </div>
@@ -121,25 +134,11 @@ const StatsPage = () => {
               <TrendingUp className="w-5 h-5 text-primary-600 mr-2" />
               <h3 className="text-lg font-semibold text-gray-900">Most Popular Skills</h3>
             </div>
-            <div className="space-y-4">
-              {stats?.popular_skills?.slice(0, 8).map((skill, index) => (
-                <div key={skill.item} className="flex items-center">
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold text-sm mr-3">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-900">{skill.item}</span>
-                      <span className="text-sm text-gray-500">{skill.count} talents</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${(skill.count / stats.popular_skills[0].count) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {stats?.topSkills?.map((skill) => (
+                <span key={skill.skill} className="inline-block bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-medium">
+                  {skill.skill} <span className="ml-1 text-xs text-primary-500">({skill.count})</span>
+                </span>
               ))}
             </div>
           </div>
@@ -150,25 +149,11 @@ const StatsPage = () => {
               <Star className="w-5 h-5 text-secondary-600 mr-2" />
               <h3 className="text-lg font-semibold text-gray-900">Popular Style Tags</h3>
             </div>
-            <div className="space-y-4">
-              {stats?.popular_styles?.slice(0, 8).map((style, index) => (
-                <div key={style.item} className="flex items-center">
-                  <div className="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center text-secondary-600 font-bold text-sm mr-3">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-900">{style.item}</span>
-                      <span className="text-sm text-gray-500">{style.count} talents</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-secondary-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${(style.count / stats.popular_styles[0].count) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {stats?.topStyleTags?.map((tag) => (
+                <span key={tag.tag} className="inline-block bg-secondary-100 text-secondary-700 px-3 py-1 rounded-full text-sm font-medium">
+                  {tag.tag} <span className="ml-1 text-xs text-secondary-500">({tag.count})</span>
+                </span>
               ))}
             </div>
           </div>
@@ -182,24 +167,30 @@ const StatsPage = () => {
               <MapPin className="w-5 h-5 text-green-600 mr-2" />
               <h3 className="text-lg font-semibold text-gray-900">City Distribution</h3>
             </div>
-            <div className="space-y-3">
-              {Object.entries(stats?.city_distribution || {})
-                .sort(([,a], [,b]) => b - a)
-                .map(([city, count]) => (
-                  <div key={city} className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-900">{city}</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(count / Math.max(...Object.values(stats?.city_distribution || {}))) * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm text-gray-500 w-8 text-right">{count}</span>
-                    </div>
-                  </div>
-                ))}
-            </div>
+            <Bar
+              data={{
+                labels: stats?.cityDistribution?.map((c) => c.city),
+                datasets: [
+                  {
+                    label: 'Talents',
+                    data: stats?.cityDistribution?.map((c) => c.count),
+                    backgroundColor: 'rgba(34,197,94,0.7)',
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { display: false },
+                  title: { display: false },
+                },
+                scales: {
+                  x: { title: { display: false } },
+                  y: { beginAtZero: true, title: { display: false } },
+                },
+              }}
+              height={250}
+            />
           </div>
 
           {/* Category Distribution */}
@@ -208,56 +199,32 @@ const StatsPage = () => {
               <Award className="w-5 h-5 text-purple-600 mr-2" />
               <h3 className="text-lg font-semibold text-gray-900">Category Distribution</h3>
             </div>
-            <div className="space-y-3">
-              {Object.entries(stats?.category_distribution || {})
-                .sort(([,a], [,b]) => b - a)
-                .map(([category, count]) => (
-                  <div key={category} className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-900">{category}</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-purple-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(count / Math.max(...Object.values(stats?.category_distribution || {}))) * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm text-gray-500 w-8 text-right">{count}</span>
-                    </div>
-                  </div>
-                ))}
-            </div>
+            <Bar
+              data={{
+                labels: stats?.categoryDistribution?.map((c) => c.category),
+                datasets: [
+                  {
+                    label: 'Talents',
+                    data: stats?.categoryDistribution?.map((c) => c.count),
+                    backgroundColor: 'rgba(168,85,247,0.7)',
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: { display: false },
+                  title: { display: false },
+                },
+                scales: {
+                  x: { title: { display: false } },
+                  y: { beginAtZero: true, title: { display: false } },
+                },
+              }}
+              height={250}
+            />
           </div>
         </div>
-
-        {/* Experience Distribution */}
-        {stats?.data_overview?.experience_range && (
-          <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
-            <div className="flex items-center mb-6">
-              <BarChart3 className="w-5 h-5 text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Experience Overview</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600 mb-2">
-                  {stats.data_overview.experience_range.min} years
-                </div>
-                <div className="text-sm text-gray-600">Minimum Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 mb-2">
-                  {stats.data_overview.experience_range.avg} years
-                </div>
-                <div className="text-sm text-gray-600">Average Experience</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600 mb-2">
-                  {stats.data_overview.experience_range.max} years
-                </div>
-                <div className="text-sm text-gray-600">Maximum Experience</div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
