@@ -29,6 +29,22 @@ const MatchResults = ({ results, searchParams }) => {
     return { label: 'Potential Match', color: 'bg-gray-500' };
   };
 
+  // Helper to extract and highlight matched skills/styles from reason
+  const parseMatchReason = (reason, searchParams) => {
+    const skillMatch = reason.match(/(\d+) skill[s]? matched \(\+\d+\)/);
+    const styleMatch = reason.match(/(\d+) style[s]? matched \(\+\d+\)/);
+    let matchedSkills = [];
+    let matchedStyles = [];
+    if (skillMatch && searchParams?.skills) {
+      // Show all searched skills as matched if any skill match
+      matchedSkills = searchParams.skills;
+    }
+    if (styleMatch && searchParams?.style_preferences) {
+      matchedStyles = searchParams.style_preferences;
+    }
+    return { matchedSkills, matchedStyles };
+  };
+
   return (
     <div className="space-y-6">
       {/* Results Header */}
@@ -54,6 +70,7 @@ const MatchResults = ({ results, searchParams }) => {
       <div className="grid gap-6">
         {results.matches.map((match, index) => {
           const scoreBadge = getScoreBadge(match.score);
+          const { matchedSkills, matchedStyles } = parseMatchReason(match.reason, searchParams);
           
           return (
             <div key={index} className="card relative overflow-hidden">
@@ -87,7 +104,23 @@ const MatchResults = ({ results, searchParams }) => {
                       <TrendingUp className="w-4 h-4 text-gray-500 mr-2" />
                       <span className="text-sm font-medium text-gray-700">Match Breakdown:</span>
                     </div>
-                    <p className="text-sm text-gray-600">{match.reason}</p>
+                    <p className="text-sm text-gray-600 mb-2">{match.reason}</p>
+                    {/* Highlight matched skills */}
+                    {matchedSkills.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-1">
+                        {matchedSkills.map(skill => (
+                          <span key={skill} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">{skill}</span>
+                        ))}
+                      </div>
+                    )}
+                    {/* Highlight matched styles */}
+                    {matchedStyles.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {matchedStyles.map(style => (
+                          <span key={style} className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">{style}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Portfolio */}
