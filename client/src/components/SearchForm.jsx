@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, MapPin, DollarSign, Palette, Plus, X } from 'lucide-react';
 
-const SearchForm = ({ onSubmit, loading }) => {
-  const [formData, setFormData] = useState({
+const SearchForm = ({ onSubmit, loading, initialValues }) => {
+  const [formData, setFormData] = useState(initialValues || {
     location: '',
     skills: [],
     budget: '',
     style_preferences: []
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      setFormData({
+        location: initialValues.location || '',
+        skills: initialValues.skills || [],
+        budget: initialValues.budget || '',
+        style_preferences: initialValues.style_preferences || []
+      });
+    }
+  }, [initialValues]);
 
   const [skillInput, setSkillInput] = useState('');
   const [styleInput, setStyleInput] = useState('');

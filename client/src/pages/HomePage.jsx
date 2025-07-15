@@ -3,6 +3,7 @@ import SearchForm from '../components/SearchForm';
 import MatchResults from '../components/MatchResults';
 import { apiService } from '../services/api';
 import { AlertCircle, CheckCircle, Wifi, WifiOff } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const HomePage = () => {
   const [results, setResults] = useState(null);
@@ -10,10 +11,28 @@ const HomePage = () => {
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useState(null);
   const [serverStatus, setServerStatus] = useState('checking');
+  const [searchParamsURL, setSearchParamsURL] = useSearchParams();
 
   // Check server status on mount
   useEffect(() => {
     checkServerHealth();
+  }, []);
+
+  // On mount, if query params exist, auto-search and prefill form
+  useEffect(() => {
+    const location = searchParamsURL.get('location');
+    const skills = searchParamsURL.get('skills');
+    const budget = searchParamsURL.get('budget');
+    const style_preferences = searchParamsURL.get('style_preferences');
+    if (location && skills && budget && style_preferences) {
+      const searchData = {
+        location,
+        skills: skills.split(','),
+        budget: parseInt(budget),
+        style_preferences: style_preferences.split(',')
+      };
+      handleSearch(searchData, false); // Don't update URL again
+    }
   }, []);
 
   const checkServerHealth = async () => {
@@ -26,16 +45,24 @@ const HomePage = () => {
     }
   };
 
-  const handleSearch = async (searchData) => {
+  // Modified handleSearch to optionally skip updating URL
+  const handleSearch = async (searchData, updateURL = true) => {
     setLoading(true);
     setError(null);
     setResults(null);
 
     try {
       const response = await apiService.findMatches(searchData);
-      
       setResults(response);
       setSearchParams(searchData);
+      if (updateURL) {
+        setSearchParamsURL({
+          location: searchData.location,
+          skills: searchData.skills.join(','),
+          budget: searchData.budget,
+          style_preferences: searchData.style_preferences.join(',')
+        });
+      }
     } catch (error) {
       setError(error.message || 'Failed to find matches. Please try again.');
     } finally {
@@ -99,7 +126,7 @@ const HomePage = () => {
         </div>
 
         {/* Search Form */}
-        <SearchForm onSubmit={handleSearch} loading={loading} />
+        <SearchForm onSubmit={handleSearch} loading={loading} initialValues={searchParams} />
 
         {/* Error Display */}
         {error && (
