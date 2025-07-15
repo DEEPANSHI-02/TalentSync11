@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const matchRoutes = require('./routes/match');
-const talentRoutes = require('./routes/talents');
+const talentRoutes = require('./routes/talent');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
