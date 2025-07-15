@@ -29,8 +29,24 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Allow all origins
-app.use(cors());
+// Allow only the deployed frontend
+const allowedOrigins = [
+  'https://talent-sync011.vercel.app', 
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
