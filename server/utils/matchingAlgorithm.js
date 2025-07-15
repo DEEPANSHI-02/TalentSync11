@@ -64,6 +64,9 @@ function calculateMatches(talentProfiles, clientRequirements) {
       }
     }
     
+    // Cap the score at 10 as per assignment rules
+    score = Math.min(score, 10);
+    
     const reason = reasonParts.length > 0 ? reasonParts.join(', ') : 'No specific matches found';
     
     return {
