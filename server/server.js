@@ -8,6 +8,8 @@ const path = require('path');
 
 const matchRoutes = require('./routes/match');
 const talentRoutes = require('./routes/talent');
+const gigsRoutes = require('./routes/gigs');
+const matchHistoryRoutes = require('./routes/match-history');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -86,6 +88,8 @@ app.set('dataLoadTime', dataLoadTime);
 // Routes
 app.use('/api/match', matchRoutes);
 app.use('/api/talents', talentRoutes);
+app.use('/api/gigs', gigsRoutes);
+app.use('/api/match-history', matchHistoryRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {

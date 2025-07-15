@@ -15,6 +15,8 @@ const HomePage = () => {
   const [resetForm, setResetForm] = useState(false);
   // Recent Searches
   const [recentSearches, setRecentSearches] = useState([]);
+  // Gigs (sample briefs)
+  const [gigs, setGigs] = useState([]);
 
   // Load recent searches from localStorage on mount
   useEffect(() => {
@@ -63,6 +65,13 @@ const HomePage = () => {
     }
   }, []);
 
+  // Fetch gigs on mount
+  useEffect(() => {
+    apiService.getGigs().then(res => {
+      if (res.success) setGigs(res.data);
+    }).catch(() => {});
+  }, []);
+
   const checkServerHealth = async () => {
     try {
       await apiService.checkHealth();
@@ -102,6 +111,18 @@ const HomePage = () => {
   // Handler to re-run a recent search
   const handleRecentSearch = (search) => {
     handleSearch(search);
+  };
+
+  // Handler to pick a sample brief
+  const handlePickBrief = (gig) => {
+    const searchData = {
+      location: gig.city,
+      skills: [], // You may map category or other fields if needed
+      budget: typeof gig.budget === 'number' ? gig.budget : '',
+      style_preferences: gig.style_tags || []
+    };
+    setSearchParams(searchData);
+    setResetForm(r => !r); // Reset form with new values
   };
 
   // Add clearSearch function
@@ -186,8 +207,34 @@ const HomePage = () => {
           </div>
         )}
 
+        {/* Sample Briefs Dropdown */}
+        {gigs.length > 0 && (
+          <div className="mb-6 max-w-4xl mx-auto">
+            <label className="font-semibold text-gray-700 mr-2">Pick a Sample Brief:</label>
+            <select
+              className="form-input w-auto inline-block"
+              defaultValue=""
+              onChange={e => {
+                const gig = gigs.find(g => g.id === e.target.value);
+                if (gig) handlePickBrief(gig);
+              }}
+            >
+              <option value="">Select a brief...</option>
+              {gigs.slice(0, 10).map(gig => (
+                <option key={gig.id} value={gig.id}>{gig.title} ({gig.city}, ₹{gig.budget})</option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Search Form */}
-        <SearchForm onSubmit={handleSearch} loading={loading} initialValues={searchParams} resetForm={resetForm} />
+        <SearchForm
+          key={JSON.stringify(searchParams) + resetForm} // force remount on change
+          onSubmit={handleSearch}
+          loading={loading}
+          initialValues={searchParams}
+          resetForm={resetForm}
+        />
 
         {/* Clear Search Button */}
         {(results || searchParams) && (

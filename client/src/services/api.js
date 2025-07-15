@@ -88,6 +88,36 @@ export const apiService = {
     } catch (error) {
       throw new Error('Talent not found');
     }
+  },
+
+  // Fetch all gigs (sample briefs)
+  async getGigs() {
+    try {
+      const response = await api.get('/api/gigs');
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch gigs');
+    }
+  },
+
+  // Get match history feedback for a talent
+  async getMatchHistory(talentId) {
+    try {
+      const response = await api.get('/api/match-history', { params: { talentId } });
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch match history');
+    }
+  },
+
+  // Post feedback to match history
+  async postMatchFeedback(feedback) {
+    try {
+      const response = await api.post('/api/match-history', feedback);
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to save feedback');
+    }
   }
 };
 
